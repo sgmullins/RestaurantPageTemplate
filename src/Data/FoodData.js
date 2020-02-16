@@ -1,7 +1,7 @@
 const foodItems = [
   { name: 'Grinder', img: '/img/grinder.jpg', section: 'Sandwiches' },
   {
-    name: 'Ham and Cheese Sandwich',
+    name: 'Ham and Cheese',
     img: '/img/hamandcheese.jpeg',
     section: 'Sandwiches',
   },
