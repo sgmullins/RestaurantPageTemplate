@@ -22,7 +22,12 @@ const Logo = styled(Title)`
 export function Navbar() {
   return (
     <NavbarStyled>
-      <Logo>Zeros Surf Subs 🏄‍♂️</Logo>
+      <Logo>
+        Zeros Surf Subs{' '}
+        <span role='img' aria-label='surfer'>
+          🏄‍♂️
+        </span>
+      </Logo>
     </NavbarStyled>
   );
 }
