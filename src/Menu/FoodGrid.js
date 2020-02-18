@@ -24,7 +24,6 @@ export const Food = styled(motion.div)`
   padding: 10px;
   font-size: 20px;
   border-radius: 6px;
-
   box-shadow: 0px 0px 2px 0px grey;
   margin-top: 5px;
   transition-property: box-shadow margin-top filter;
