@@ -29,6 +29,10 @@ const OrderContent = styled(ModalContent)`
 const OrderContainer = styled.div`
   padding: 10px 0;
   border-bottom: 1px solid grey;
+  ${({ editable }) =>
+    editable
+      ? `&:hover { cursor: pointer; background-color: #e7e7e7;}`
+      : `pointer-events: none`}
 `;
 
 const OrderItem = styled.div`
@@ -38,7 +42,24 @@ const OrderItem = styled.div`
   justify-content: space-between;
 `;
 
-export function Order({ orders }) {
+const ItemDetails = styled.div`
+  color: grey;
+  font-size: 10px;
+`;
+
+export function Order({ orders, setOrders, setOpenFood }) {
+  const subTotal = orders.reduce((total, nextOrder) => {
+    return total + getPrice(nextOrder);
+  }, 0);
+  const tax = subTotal * 0.07;
+  const total = subTotal + tax;
+
+  const deleteItems = index => {
+    const newOrders = [...orders];
+    newOrders.splice(index, 1);
+    setOrders(newOrders);
+  };
+
   return (
     <>
       <OrderStyled>
@@ -47,16 +68,52 @@ export function Order({ orders }) {
         ) : (
           <OrderContent>
             <OrderContainer>Your Order: </OrderContainer>
-            {orders.map(order => (
-              <OrderContainer>
-                <OrderItem>
+            {orders.map((order, index) => (
+              <OrderContainer editable>
+                <OrderItem
+                  onClick={() => {
+                    setOpenFood({ ...order, index });
+                  }}
+                >
                   <div>{order.quantity}</div>
                   <div>{order.name}</div>
-                  <div></div>
+                  <div
+                    style={{ cursor: 'pointer' }}
+                    onClick={e => {
+                      e.stopPropagation();
+                      deleteItems(index);
+                    }}
+                  >
+                    🗑
+                  </div>
                   <div>{formatPrice(getPrice(order))}</div>
                 </OrderItem>
+                <ItemDetails>
+                  {order.toppings
+                    .filter(t => t.checked)
+                    .map(topping => topping.name)
+                    .join(', ')}
+                </ItemDetails>
+                {order.choice && <ItemDetails>{order.choice}</ItemDetails>}
               </OrderContainer>
             ))}
+            <OrderContainer>
+              <OrderItem>
+                <div></div>
+                <div>Sub-Total:</div>
+                <div>{formatPrice(subTotal)}</div>
+              </OrderItem>
+              <OrderItem>
+                <div></div>
+                <div>Tax:</div>
+                <div>{formatPrice(tax)}</div>
+              </OrderItem>
+              <OrderItem>
+                <div></div>
+                <div>Total:</div>
+                <div>{formatPrice(total)}</div>
+              </OrderItem>
+            </OrderContainer>
           </OrderContent>
         )}
         <FooterContainer>

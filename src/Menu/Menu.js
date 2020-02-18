@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { foods, formatPrice } from '../Data/FoodData';
 import { Food, FoodGrid, FoodLabel } from './FoodGrid';
+import { motion } from 'framer-motion';
 
 const MenuStyled = styled.div`
   height: 1000px;

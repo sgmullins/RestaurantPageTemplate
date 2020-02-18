@@ -6,9 +6,13 @@ import { Title } from '../Styles/title';
 import { formatPrice } from '../Data/FoodData';
 import { QuantityInput } from './QuantityInput';
 import { useQuantity } from '../Hooks/useQuantity';
+import { Toppings } from './Toppings';
+import { useToppings } from '../Hooks/useToppings';
+import { useChoice } from '../Hooks/useChoice';
+import { Choices } from '../FoodDialog/Choices';
 
 const Dialog = styled.div`
-  width: 500px;
+  width: 600px;
   position: fixed;
   background-color: white;
   top: 75px;
@@ -30,15 +34,15 @@ const DialogShadow = styled.div`
 `;
 
 const DialogBannerName = styled(FoodLabel)`
-  top: 100px;
   font-size: 30px;
   padding: 5px 40px;
+  top: ${({ img }) => (img ? `100px` : '20px')};
 `;
 
 const DialogBanner = styled.div`
   min-height: 200px;
   margin-bottom: 20px;
-  ${({ img }) => `background-image: url(${img});`}
+  ${({ img }) => (img ? `background-image: url(${img});` : `min-height: 75px;`)}
   background-position: center;
   background-size: cover;
 `;
@@ -47,6 +51,7 @@ export const ModalContent = styled.div`
   overflow: auto;
   min-height: 100px;
   padding: 0 40px;
+  padding-bottom: 80px;
 `;
 
 export const FooterContainer = styled.div`
@@ -66,28 +71,55 @@ export const ConfirmButton = styled(Title)`
   width: 200px;
   cursor: pointer;
   background-color: ${zerosRed};
+  ${({ disabled }) =>
+    disabled &&
+    `
+  opacity: .5;
+  background-color: grey;
+  pointer-events: none
+  `}
 `;
 
+const pricePerTopping = 0.5;
+
 export function getPrice(order) {
-  return order.quantity * order.price;
+  return (
+    order.quantity *
+    (order.price +
+      order.toppings.filter(t => t.checked).length * pricePerTopping)
+  );
+}
+
+function hasToppings(food) {
+  return food.section === 'Sandwiches' || food.section === 'Pizzas';
 }
 
 function FoodDialogContainer({ openFood, setOpenFood, orders, setOrders }) {
   const quantity = useQuantity(openFood && openFood.quantity);
+  const toppings = useToppings(openFood.toppings);
+  const choiceRadio = useChoice(openFood.choice);
+  const isEditing = openFood.index > -1;
 
   function handleClose() {
     setOpenFood();
   }
 
-  // if (!openFood) return null;
-
   const order = {
     ...openFood,
     quantity: quantity.value,
+    toppings: toppings.toppings,
+    choice: choiceRadio.value,
   };
 
   function handleAddToOrder() {
     setOrders([...orders, order]);
+    handleClose();
+  }
+
+  function editOrder() {
+    const newOrders = [...orders];
+    newOrders[openFood.index] = order;
+    setOrders(newOrders);
     handleClose();
   }
 
@@ -100,10 +132,23 @@ function FoodDialogContainer({ openFood, setOpenFood, orders, setOrders }) {
         </DialogBanner>
         <ModalContent>
           <QuantityInput quantity={quantity} />
+          {hasToppings(openFood) && (
+            <>
+              <h3>Choose your toppings</h3>
+              <Toppings {...toppings} />
+            </>
+          )}
+          {openFood.choices && (
+            <Choices openFood={openFood} choiceRadio={choiceRadio} />
+          )}
         </ModalContent>
         <FooterContainer>
-          <ConfirmButton onClick={handleAddToOrder}>
-            Add To Order: {formatPrice(getPrice(order))}
+          <ConfirmButton
+            onClick={isEditing ? editOrder : handleAddToOrder}
+            disabled={openFood.choices && !choiceRadio.value}
+          >
+            {isEditing ? `Update order:` : `Add To Order:`}{' '}
+            {formatPrice(getPrice(order))}
           </ConfirmButton>
         </FooterContainer>
       </Dialog>

@@ -1,9 +1,12 @@
 import styled from 'styled-components';
 import { Title } from '../Styles/title';
+import { motion } from 'framer-motion';
+
 export const FoodGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
+  padding-bottom: 40px;
 `;
 
 export const FoodLabel = styled(Title)`
@@ -12,7 +15,7 @@ export const FoodLabel = styled(Title)`
   padding: 5px;
 `;
 
-export const Food = styled.div`
+export const Food = styled(motion.div)`
   height: 100px;
   background-image: ${({ img }) => `url(${img})`};
   background-position: center;
@@ -21,6 +24,7 @@ export const Food = styled.div`
   padding: 10px;
   font-size: 20px;
   border-radius: 6px;
+
   box-shadow: 0px 0px 2px 0px grey;
   margin-top: 5px;
   transition-property: box-shadow margin-top filter;
