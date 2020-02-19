@@ -18,8 +18,8 @@ function App() {
     <>
       <GlobalStyle />
       <Navbar />
-      <Order {...orders} {...openFood} />
       <Banner />
+      <Order {...orders} {...openFood} />
       <FoodDialog {...openFood} {...orders} />
       <Menu {...openFood} />
     </>

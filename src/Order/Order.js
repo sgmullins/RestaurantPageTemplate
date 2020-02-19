@@ -11,10 +11,10 @@ import { getPrice } from '../FoodDialog/FoodDialog';
 const OrderStyled = styled.div`
   position: fixed;
   right: 0;
-  top: 47px;
+  top: 59px;
   width: 340px;
   background-color: white;
-  height: calc(100% - 50px);
+  height: calc(100% - 64px);
   z-index: 10;
   box-shadow: 4px 0px 5px 4px grey;
   display: flex;
@@ -62,64 +62,66 @@ export function Order({ orders, setOrders, setOpenFood }) {
 
   return (
     <>
-      <OrderStyled>
-        {orders.length === 0 ? (
-          <OrderContent>Your order is empty</OrderContent>
-        ) : (
-          <OrderContent>
-            <OrderContainer>Your Order: </OrderContainer>
-            {orders.map((order, index) => (
-              <OrderContainer editable>
-                <OrderItem
-                  onClick={() => {
-                    setOpenFood({ ...order, index });
-                  }}
-                >
-                  <div>{order.quantity}</div>
-                  <div>{order.name}</div>
-                  <div
-                    style={{ cursor: 'pointer' }}
-                    onClick={e => {
-                      e.stopPropagation();
-                      deleteItems(index);
+      {orders.length > 0 && (
+        <OrderStyled>
+          {orders.length === 0 ? (
+            <OrderContent>Your order is empty</OrderContent>
+          ) : (
+            <OrderContent>
+              <OrderContainer>Your Order: </OrderContainer>
+              {orders.map((order, index) => (
+                <OrderContainer editable>
+                  <OrderItem
+                    onClick={() => {
+                      setOpenFood({ ...order, index });
                     }}
                   >
-                    🗑
-                  </div>
-                  <div>{formatPrice(getPrice(order))}</div>
+                    <div>{order.quantity}</div>
+                    <div>{order.name}</div>
+                    <div
+                      style={{ cursor: 'pointer' }}
+                      onClick={e => {
+                        e.stopPropagation();
+                        deleteItems(index);
+                      }}
+                    >
+                      🗑
+                    </div>
+                    <div>{formatPrice(getPrice(order))}</div>
+                  </OrderItem>
+                  <ItemDetails>
+                    {order.toppings
+                      .filter(t => t.checked)
+                      .map(topping => topping.name)
+                      .join(', ')}
+                  </ItemDetails>
+                  {order.choice && <ItemDetails>{order.choice}</ItemDetails>}
+                </OrderContainer>
+              ))}
+              <OrderContainer>
+                <OrderItem>
+                  <div></div>
+                  <div>Sub-Total:</div>
+                  <div>{formatPrice(subTotal)}</div>
                 </OrderItem>
-                <ItemDetails>
-                  {order.toppings
-                    .filter(t => t.checked)
-                    .map(topping => topping.name)
-                    .join(', ')}
-                </ItemDetails>
-                {order.choice && <ItemDetails>{order.choice}</ItemDetails>}
+                <OrderItem>
+                  <div></div>
+                  <div>Tax:</div>
+                  <div>{formatPrice(tax)}</div>
+                </OrderItem>
+                <OrderItem>
+                  <div></div>
+                  <div>Total:</div>
+                  <div>{formatPrice(total)}</div>
+                </OrderItem>
               </OrderContainer>
-            ))}
-            <OrderContainer>
-              <OrderItem>
-                <div></div>
-                <div>Sub-Total:</div>
-                <div>{formatPrice(subTotal)}</div>
-              </OrderItem>
-              <OrderItem>
-                <div></div>
-                <div>Tax:</div>
-                <div>{formatPrice(tax)}</div>
-              </OrderItem>
-              <OrderItem>
-                <div></div>
-                <div>Total:</div>
-                <div>{formatPrice(total)}</div>
-              </OrderItem>
-            </OrderContainer>
-          </OrderContent>
-        )}
-        <FooterContainer>
-          <ConfirmButton>Checkout</ConfirmButton>
-        </FooterContainer>
-      </OrderStyled>
+            </OrderContent>
+          )}
+          <FooterContainer>
+            <ConfirmButton>Checkout</ConfirmButton>
+          </FooterContainer>
+        </OrderStyled>
+      )}
     </>
   );
 }

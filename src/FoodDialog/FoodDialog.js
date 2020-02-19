@@ -79,6 +79,13 @@ export const ConfirmButton = styled(Title)`
   pointer-events: none
   `}
 `;
+const ImgCredit = styled.div`
+position: absolute;
+    top: 180px;
+    right: 10px;
+    font-size: 14px
+}
+`;
 
 const pricePerTopping = 0.5;
 
@@ -91,7 +98,11 @@ export function getPrice(order) {
 }
 
 function hasToppings(food) {
-  return food.section === 'Sandwiches' || food.section === 'Pizzas';
+  return (
+    food.section === 'Sandwiches' ||
+    food.section === 'Pizzas' ||
+    food.section === 'Special of the Day'
+  );
 }
 
 function FoodDialogContainer({ openFood, setOpenFood, orders, setOrders }) {
@@ -140,6 +151,16 @@ function FoodDialogContainer({ openFood, setOpenFood, orders, setOrders }) {
           )}
           {openFood.choices && (
             <Choices openFood={openFood} choiceRadio={choiceRadio} />
+          )}
+          {openFood.credit && (
+            <ImgCredit>
+              <a
+                href={openFood.credit}
+                style={{ textDecoration: 'underline', color: 'black' }}
+              >
+                img credit
+              </a>
+            </ImgCredit>
           )}
         </ModalContent>
         <FooterContainer>
