@@ -8,6 +8,7 @@ import { Order } from './Order/Order';
 import { useOpenFood } from './Hooks/useOpenFood';
 import { useOrders } from './Hooks/useOrders';
 import { useTitle } from './Hooks/useTitle';
+import { Footer } from './Footer/Footer';
 
 function App() {
   const openFood = useOpenFood();
@@ -22,6 +23,11 @@ function App() {
       <Order {...orders} {...openFood} />
       <FoodDialog {...openFood} {...orders} />
       <Menu {...openFood} />
+      <Footer>
+        Images and Logos were used for educational purposes. Where possible I
+        credited the artist. This website does not represent the franchise
+        Zeros, I just love their subs!
+      </Footer>
     </>
   );
 }
